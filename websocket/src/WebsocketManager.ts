@@ -57,7 +57,39 @@ export class WebSocketManager {
         this.pubSub.publish('websocket connection disconnedted', event)
     }
 
-
-
+    public sendMessage(payload:any) {
+        if(!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+            console.error("Websocket is not open")
+            return;
+        }
+        try{
+            this.socket.send(JSON.stringify(payload));
+        }catch(error) {
+            console.error('failed to send messafe', error)
+        }
+    }
 
 }
+// Example Usage
+const wsManager = WebSocketManager.getInstance();
+const pubSub = PubSubManager.getInstance();
+
+// Subscribe to video timestamp updates
+const unsubscribeTimestamp = pubSub.subscribe('video:timestamp_updated', (data) => {
+  console.log('Timestamp updated:', data);
+  // Handle timestamp update logic
+});
+
+// Subscribe to WebSocket connection events
+const unsubscribeConnected = pubSub.subscribe('websocket:connected', () => {
+  console.log('WebSocket connected successfully');
+});
+
+// Connect to WebSocket
+wsManager.connect('wss://your-websocket-server.com');
+
+// Send a video subscription message
+wsManager.sendMessage({
+  type: 'video:subscribe',
+  video_id: 'some-video-uuid'
+});
