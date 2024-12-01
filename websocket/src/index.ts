@@ -1,7 +1,6 @@
 import WebSocket, { WebSocketServer } from 'ws';
 import Redis from 'ioredis';
 
-// Define the types for incoming message
 interface SubscribeMessage {
   type: 'video:subscribe' | 'video:unsubscribe';
   video_id: string;
@@ -31,12 +30,12 @@ wss.on('connection', (ws) => {
 
       if (data.type === 'video:subscribe') {
         console.log(`Client subscribed to video: ${data.video_id}`);
-        redis.publish('video:subscribe', JSON.stringify(data)); // Publish to Redis
+        redis.publish('video:subscribe', JSON.stringify(data)); 
       }
 
       else if (data.type === 'video:unsubscribe') {
         console.log(`Client unsubscribed from video: ${data.video_id}`);
-        redis.publish('video:unsubscribe', JSON.stringify(data)); // Publish to Redis
+        redis.publish('video:unsubscribe', JSON.stringify(data)); 
       }
     } catch (error) {
       console.error('Invalid message format:', error);
